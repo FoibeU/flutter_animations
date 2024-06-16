@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Kids Animation',
+      title: 'bouncing ball',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -33,11 +33,18 @@ class _MyHomePageState extends State<MyHomePage>
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat(reverse: true);
+    );
 
     _animation = Tween<double>(begin: 0, end: 300).animate(
       CurvedAnimation(parent: _controller, curve: Curves.bounceInOut),
     );
+  }
+
+  void _startAnimation() {
+    if (_controller.status == AnimationStatus.completed ||
+        _controller.status == AnimationStatus.dismissed) {
+      _controller.forward(from: 0.0);
+    }
   }
 
   @override
@@ -50,23 +57,26 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Animation(bouncing ball)'),
+        title: Text('bouncing ball'),
       ),
       body: Center(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return Container(
-              margin: EdgeInsets.only(top: _animation.value),
-              width: 50,
-              height: 50,
-              child: child,
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 24, 15, 14),
+        child: GestureDetector(
+          onTap: _startAnimation,
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return Container(
+                margin: EdgeInsets.only(top: _animation.value),
+                width: 50,
+                height: 50,
+                child: child,
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.red,
+              ),
             ),
           ),
         ),
